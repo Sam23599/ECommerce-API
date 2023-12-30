@@ -13,15 +13,34 @@ module.exports.productsList = async function (req, res) {
 
 
 module.exports.createNewProduct = async function (req, res) {
+    // req url should look like this - http://localhost:6200/products/create?product=Esla&quantity=16
     try {
-        const newProduct = await Product.create({
-            name: 'laptop',
-            quantity: 10
-        });
+        const product = req.query.product;
+        const quantity = req.query.quantity;
+        let newProduct = {};
+
+        const existingProduct = await Product.findOne({ name: product });
+
+        if (!product) {
+            newProduct = await Product.create({
+                name: 'Default',
+                quantity: 1
+            });
+            message = 'No New Product Found. Creating Default Product';
+        } else if (existingProduct) {
+            newProduct = existingProduct;
+            message = 'Product Already Existed. Returning Original Product';
+        } else {
+            newProduct = await Product.create({
+                name: product,
+                quantity: quantity,
+            });
+            message = 'New Product Created';
+        }
 
         console.log(`Product '${newProduct.name}' Added Successfully`);
 
-        return res.status(201).json({ success: true, product: newProduct });
+        return res.status(201).json({ success: true, message: message, product: newProduct });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
@@ -50,14 +69,15 @@ module.exports.deleteProduct = async function (req, res) {
 
 
 module.exports.updateProduct = async function (req, res) {
+    // req url should look like this - http://localhost:6200/products/659049c86c27b67a22575c3a/update_quantity?number=10
     try {
         const productId = req.params.id;
-        const quantity = req.params.number;
-        
+        const quantity = req.query.number;
+
         const product = await Product.findOneAndUpdate(
             { _id: productId },
             { quantity: quantity },
-            { new: true } 
+            { new: true }
         );
 
         if (!product) {
@@ -66,7 +86,6 @@ module.exports.updateProduct = async function (req, res) {
 
         return res.status(200).json({ success: true, message: `Updated quantity successfully.`, product });
     } catch (error) {
-        // Handle errors and send an appropriate error response
         console.error(error);
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
