@@ -1,0 +1,21 @@
+{
+  "name": "ecommerce-api",
+  "version": "1.0.0",
+  "description": "ECom API for admin to keep check of products in his warehouse",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecom-api",
+    "api",
+    "ecommerce-api"
+  ],
+  "author": "Satyam Singh Virat",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.3"
+  }
+}
