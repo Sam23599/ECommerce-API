@@ -3,6 +3,9 @@ const router = express.Router();
 
 const homeController = require('../controllers/home_controller');
 
+router.get('/', (req, res) => {
+    res.redirect('/products');
+});
 router.get('/products', homeController.productsList);
 router.post('/products/create', homeController.createNewProduct);
 router.delete('/products/:id', homeController.deleteProduct);
